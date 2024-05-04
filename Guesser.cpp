@@ -15,7 +15,31 @@ using std::string;
   has 100, the distance is 10.
 */
 unsigned int Guesser::distance(string guess){
-  return 0;
+	int count = 0;
+	if(m_secret.size() > guess.size()){
+		for(int i = 0; i < guess.size(); i++){
+			if(guess[i] != m_secret[i]){
+				count++;
+			}
+		}
+		count += (m_secret.size() - guess.size());
+	}
+	else if(m_secret.size() < guess.size()){
+		for(int i = 0; i < m_secret.size(); i++){
+			if(guess[i] != m_secret[i]){
+				count++;
+			}
+		}
+		count += (guess.size() - m_secret.size());
+	}
+	else{
+		for(int i = 0; i < m_secret.size(); i++){
+			if(guess[i] != m_secret[i]){
+				count++;
+			}
+		}
+	}
+	return count;
 }
 
 /*
@@ -25,7 +49,14 @@ unsigned int Guesser::distance(string guess){
   otherwise, it will be truncated at that length.
 */
 Guesser::Guesser(string secret){
-
+	m_remaining = 3;
+	if(secret.size() <= 32){
+		m_secret = secret;
+	}
+	else{
+		secret.resize(32);
+		m_secret = secret;
+	}
 }
 
 /*
@@ -40,7 +71,21 @@ Guesser::Guesser(string secret){
   and the secret.
 */
 bool Guesser::match(string guess){
-  return true;
+	if(m_remaining == 0){
+		return false;
+	}
+	else if(distance(guess) > 2){
+		m_remaining = 0;
+		return false;
+	}
+	else if (distance(guess) != 0){
+		m_remaining--;
+		return false;
+	}
+	else{
+		m_remaining = 3;
+		return true;
+	}
 }
 
 /*
@@ -51,6 +96,6 @@ bool Guesser::match(string guess){
   reset to three (3).
 */
 unsigned int Guesser::remaining(){
-  return 0;
+  return m_remaining;
 }
 
